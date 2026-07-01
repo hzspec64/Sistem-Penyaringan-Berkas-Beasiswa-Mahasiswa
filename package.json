@@ -1,0 +1,16 @@
+{
+  "name": "bot-beasiswa-sttnf",
+  "version": "1.0.0",
+  "description": "Bot Telegram penyaring beasiswa - UAS Kecerdasan Artifisial KMIE22002SI",
+  "main": "bot/index.js",
+  "scripts": {
+    "start": "node bot/index.js",
+    "dev": "node --watch bot/index.js"
+  },
+  "keywords": ["telegram", "telegraf", "beasiswa", "bot"],
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "telegraf": "^4.16.3"
+  }
+}

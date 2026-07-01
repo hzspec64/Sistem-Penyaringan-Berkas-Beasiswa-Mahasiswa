@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulasi Kelayakan Beasiswa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-1: #0c1222;
+      --bg-2: #111827;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59, 130, 246, 0.12);
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --card: #ffffff;
+      --success: #16a34a;
+      --success-bg: #f0fdf4;
+      --success-border: #86efac;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --danger-border: #fca5a5;
+      --warn: #d97706;
+      --warn-bg: #fffbeb;
+      --warn-border: #fcd34d;
+      --radius: 16px;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--bg-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      width: 420px;
+      height: 420px;
+      background: rgba(59, 130, 246, 0.35);
+      top: -120px;
+      right: -80px;
+    }
+
+    body::after {
+      width: 360px;
+      height: 360px;
+      background: rgba(16, 185, 129, 0.2);
+      bottom: -100px;
+      left: -60px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 460px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(147, 197, 253, 0.25);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .header {
+      margin-bottom: 1.75rem;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+
+    .header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .criteria {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .criteria-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.75rem;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .criteria-item strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.82rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .criteria-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+      background: var(--accent-soft);
+    }
+
+    .field {
+      margin-bottom: 1.1rem;
+    }
+
+    .field label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.45rem;
+    }
+
+    .field label span {
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap .prefix {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 0.8rem 0.9rem;
+      padding-left: 2.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field:not(.field-rp) .input-wrap input {
+      padding-left: 0.9rem;
+    }
+
+    .input-wrap input::placeholder {
+      color: #94a3b8;
+    }
+
+    .input-wrap input:hover {
+      border-color: #cbd5e1;
+    }
+
+    .input-wrap input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft);
+    }
+
+    .btn-cek {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.9rem 1rem;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    .btn-cek:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-cek:active {
+      transform: translateY(0);
+    }
+
+    #hasil {
+      margin-top: 1.25rem;
+      padding: 1.1rem 1rem;
+      border-radius: 14px;
+      border: 1.5px dashed #cbd5e1;
+      background: #f8fafc;
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    #hasil .hasil-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+
+    #hasil .hasil-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #94a3b8;
+    }
+
+    #hasil .hasil-detail {
+      margin-top: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    #hasil.lolos {
+      border-style: solid;
+      border-color: var(--success-border);
+      background: var(--success-bg);
+    }
+
+    #hasil.lolos .hasil-text {
+      color: var(--success);
+    }
+
+    #hasil.tidak-lolos {
+      border-style: solid;
+      border-color: var(--danger-border);
+      background: var(--danger-bg);
+    }
+
+    #hasil.tidak-lolos .hasil-text {
+      color: var(--danger);
+    }
+
+    #hasil.warning {
+      border-style: solid;
+      border-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+
+    #hasil.warning .hasil-text {
+      color: var(--warn);
+    }
+
+    .footer-note {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="badge">🎓 UAS Kecerdasan Artifisial</div>
+
+    <div class="card">
+      <header class="header">
+        <h1>Simulasi Kelayakan Beasiswa</h1>
+        <p>Masukkan IPK dan pendapatan orang tua untuk melihat rekomendasi pendaftaran.</p>
+      </header>
+
+      <div class="criteria">
+        <div class="criteria-item">
+          <div class="criteria-icon">📊</div>
+          <div>
+            <strong>IPK minimal</strong>
+            ≥ 3.30
+          </div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-icon">💰</div>
+          <div>
+            <strong>Pendapatan maks.</strong>
+            ≤ Rp 5.000.000
+          </div>
+        </div>
+      </div>
+
+      <form id="formSimulasi" novalidate>
+        <div class="field">
+          <label for="ipk">
+            Indeks Prestasi Kumulatif
+            <span>0.00 – 4.00</span>
+          </label>
+          <div class="input-wrap">
+            <input type="number" id="ipk" step="0.01" min="0" max="4" placeholder="Contoh: 3.40" inputmode="decimal" />
+          </div>
+        </div>
+
+        <div class="field field-rp">
+          <label for="pendapatan">
+            Pendapatan Orang Tua
+            <span>per bulan</span>
+          </label>
+          <div class="input-wrap">
+            <span class="prefix">Rp</span>
+            <input type="number" id="pendapatan" min="0" step="1000" placeholder="Contoh: 2.500.000" inputmode="numeric" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-cek" id="btnCek">Cek Status Kelayakan</button>
+      </form>
+
+      <div id="hasil" role="status" aria-live="polite">
+        <span class="hasil-icon">✨</span>
+        <div class="hasil-text">Hasil simulasi akan muncul di sini.</div>
+      </div>
+
+      <p class="footer-note">
+        KMIE22002SI — Part B Sistem Penyaringan Berkas Beasiswa
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const IPK_MIN = 3.3;
+    const PENDAPATAN_MAX = 5000000;
+
+    const form = document.getElementById('formSimulasi');
+    const ipkInput = document.getElementById('ipk');
+    const pendapatanInput = document.getElementById('pendapatan');
+    const hasil = document.getElementById('hasil');
+
+    function formatRupiah(n) {
+      return new Intl.NumberFormat('id-ID').format(n);
+    }
+
+    function setHasil(type, icon, text, detail) {
+      hasil.className = type;
+      hasil.innerHTML =
+        '<span class="hasil-icon">' + icon + '</span>' +
+        '<div class="hasil-text">' + text + '</div>' +
+        (detail ? '<div class="hasil-detail">' + detail + '</div>' : '');
+    }
+
+    function cekKelayakan(e) {
+      if (e) e.preventDefault();
+
+      const ipk = parseFloat(ipkInput.value);
+      const pendapatan = parseFloat(pendapatanInput.value);
+
+      if (Number.isNaN(ipk) || Number.isNaN(pendapatan)) {
+        setHasil('warning', '⚠️', 'Mohon isi IPK dan pendapatan dengan angka yang valid.');
+        return;
+      }
+
+      const detail = 'IPK ' + ipk.toFixed(2) + ' · Pendapatan Rp ' + formatRupiah(pendapatan);
+
+      if (ipk >= IPK_MIN && pendapatan <= PENDAPATAN_MAX) {
+        setHasil(
+          'lolos',
+          '✅',
+          'Rekomendasi: Anda Layak Mendaftar via Telegram!',
+          detail
+        );
+      } else {
+        setHasil(
+          'tidak-lolos',
+          '❌',
+          'Rekomendasi: Anda Tidak Memenuhi Syarat Beasiswa.',
+          detail
+        );
+      }
+    }
+
+    form.addEventListener('submit', cekKelayakan);
+  </script>
+</body>
+</html>

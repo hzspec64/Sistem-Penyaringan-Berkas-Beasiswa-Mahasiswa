@@ -1,0 +1,635 @@
+{
+  "name": "Bot Penyaring Beasiswa - UAS AI",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"]
+      },
+      "id": "telegram-trigger-001",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "beasiswa-webhook",
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_DENGAN_CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $input.first().json.message || {};\nconst text = (msg.text || '').trim();\nconst chatId = msg.chat?.id;\nconst nama = msg.from?.first_name || 'Mahasiswa';\n\nconst MENU = '🏠 Menu Utama';\nconst SYARAT = '📋 Syarat Beasiswa';\nconst DEMO_LOLOS = '✅ Demo Lolos (Skenario 1)';\nconst DEMO_TIDAK = '❌ Demo Tidak Lolos (Skenario 2)';\nconst BANTUAN = 'ℹ️ Bantuan';\nconst CEK_LAGI = '🔄 Cek Lagi';\nconst COBA_LAGI = '🔄 Coba Lagi';\nconst DAFTAR = '🎓 Daftar / Cek Beasiswa';\n\nlet route = 'proses';\nlet pesan = text;\n\nif (!text || text === '/start' || text === MENU || text === CEK_LAGI || text === COBA_LAGI || text === DAFTAR) {\n  route = 'menu';\n} else if (text === SYARAT) {\n  route = 'syarat';\n} else if (text === BANTUAN) {\n  route = 'bantuan';\n} else if (text === DEMO_LOLOS) {\n  route = 'proses';\n  pesan = 'IPK saya 3.52 dan pendapatan orang tua 4.5 juta.';\n} else if (text === DEMO_TIDAK) {\n  route = 'proses';\n  pesan = 'IPK saya 3.10 dan gaji orang tua 3 juta.';\n}\n\nreturn [{ json: { route, pesan, chatId, nama, textAsli: text } }];"
+      },
+      "id": "code-router-001",
+      "name": "Router Menu & Pesan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "menu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Menu"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "syarat",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Syarat"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "bantuan",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Bantuan"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "switch-route-001",
+      "name": "Switch Rute",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [560, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ `Halo ${$json.nama}! 👋\\n\\nSaya <b>Bot Penyaring Beasiswa STTNF</b> — siap bantu cek kelayakan beasiswa.\\n\\nKetik data bebas, atau <b>ketuk kotak abu-abu</b> untuk salin:\\n<code>IPK saya 3.52 dan pendapatan orang tua 4.5 juta</code>\\n\\nAtau tekan tombol <b>Demo Lolos</b> di bawah ⬇️` }}",
+        "replyMarkup": "replyKeyboard",
+        "replyKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🎓 Daftar / Cek Beasiswa",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Demo Lolos (Skenario 1)",
+                    "additionalFields": {
+                      "style": "success"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "❌ Demo Tidak Lolos (Skenario 2)",
+                    "additionalFields": {
+                      "style": "danger"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📋 Syarat Beasiswa",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  },
+                  {
+                    "text": "ℹ️ Bantuan",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "replyKeyboardOptions": {
+          "resize_keyboard": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "telegram-menu-001",
+      "name": "Telegram Menu Utama",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [800, 80],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_DENGAN_CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "📋 *Syarat Beasiswa STTNF*\n\n✅ IPK minimal *3.30*\n✅ Pendapatan orang tua maksimal *Rp 5.000.000*/bulan\n\nKirim data Anda dalam satu pesan, contoh:\n`IPK saya 3.40 dan gaji orang tua 4 juta`",
+        "replyMarkup": "replyKeyboard",
+        "replyKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Demo Lolos (Skenario 1)",
+                    "additionalFields": {
+                      "style": "success"
+                    }
+                  },
+                  {
+                    "text": "❌ Demo Tidak Lolos (Skenario 2)",
+                    "additionalFields": {
+                      "style": "danger"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🏠 Menu Utama",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "replyKeyboardOptions": {
+          "resize_keyboard": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-syarat-001",
+      "name": "Telegram Syarat",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [800, 220],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_DENGAN_CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "ℹ️ *Cara pakai bot:*\n\n1️⃣ Tekan *Demo Lolos* atau *Demo Tidak Lolos* untuk uji skenario UAS\n2️⃣ Atau ketik bebas: IPK + pendapatan orang tua\n3️⃣ Bot akan ekstraksi data pakai AI lalu cek kriteria\n\nKriteria: IPK ≥ 3.30 & pendapatan ≤ Rp 5.000.000",
+        "replyMarkup": "replyKeyboard",
+        "replyKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🏠 Menu Utama",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "replyKeyboardOptions": {
+          "resize_keyboard": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-bantuan-001",
+      "name": "Telegram Bantuan",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [800, 360],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_DENGAN_CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.pesan }}",
+        "options": {
+          "systemMessage": "Kamu adalah asisten ekstraksi data beasiswa. Dari pesan pengguna, ekstrak IPK (angka desimal 0-4) dan pendapatan orang tua per bulan dalam Rupiah (integer). Jika user menulis 'juta', kalikan dengan 1000000. Balas HANYA dengan JSON valid tanpa markdown: {\"ipk\": number, \"pendapatan\": number}. Contoh input: 'IPK saya 3.52 dan pendapatan orang tua 4.5 juta' -> {\"ipk\": 3.52, \"pendapatan\": 4500000}"
+        }
+      },
+      "id": "ai-agent-001",
+      "name": "AI Agent Ekstraksi",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [800, 520]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ai = $input.first().json;\nconst raw = ai.output || ai.text || ai.response || '{}';\nconst router = $('Router Menu & Pesan').first().json;\nconst telegramText = router.pesan || '';\n\nfunction parseFromText(text) {\n  const t = String(text).toLowerCase().replace(/,/g, '.');\n  const ipkMatch = t.match(/ipk[^0-9]*(\\d+(?:\\.\\d+)?)/) || t.match(/(\\d+(?:\\.\\d+)?)\\s*ipk/);\n  let pendapatan = null;\n  const juta = t.match(/(?:pendapatan|gaji|penghasilan)(?:\\s+orang\\s+tua)?[^0-9]*(\\d+(?:\\.\\d+)?)\\s*juta/);\n  if (juta) pendapatan = parseFloat(juta[1]) * 1_000_000;\n  if (pendapatan === null) {\n    const rp = t.match(/(?:pendapatan|gaji|penghasilan)(?:\\s+orang\\s+tua)?[^0-9]*(\\d[\\d.,]*)/);\n    if (rp) pendapatan = parseInt(rp[1].replace(/[.,]/g, ''), 10);\n  }\n  const ipk = ipkMatch ? parseFloat(ipkMatch[1]) : null;\n  if (ipk === null || pendapatan === null) return null;\n  return { ipk, pendapatan };\n}\n\nlet parsed = null;\ntry {\n  const clean = String(raw).replace(/```json|```/gi, '').trim();\n  const jsonMatch = clean.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);\n} catch (e) {\n  parsed = null;\n}\n\nif (!parsed || parsed.ipk === undefined || parsed.pendapatan === undefined) {\n  parsed = parseFromText(telegramText) || { ipk: 0, pendapatan: 9_999_999 };\n}\n\nconst ipk = Number(parsed.ipk);\nconst pendapatan = Number(parsed.pendapatan);\nconst lolos = ipk >= 3.3 && pendapatan <= 5_000_000;\nconst chatId = router.chatId;\nconst nama = router.nama;\n\nreturn [{ json: { ipk, pendapatan, lolos, chatId, nama } }];"
+      },
+      "id": "code-parse-001",
+      "name": "Parse & Cek Kelayakan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 520]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-lolos",
+              "leftValue": "={{ $json.lolos }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-lolos-001",
+      "name": "If Lolos?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1280, 520]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "GANTI_SPREADSHEET_ID"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "Sheet1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nama": "={{ $json.nama }}",
+            "IPK": "={{ $json.ipk }}",
+            "Pendapatan": "={{ $json.pendapatan }}",
+            "Status": "Lolos Seleksi Awal",
+            "Waktu": "={{ $now.toISO() }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheets-001",
+      "name": "Google Sheets Simpan Lolos",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1520, 420],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GANTI_DENGAN_CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse & Cek Kelayakan').item.json.chatId }}",
+        "text": "={{ `🎉 *Selamat, ${$('Parse & Cek Kelayakan').first().json.nama}!*\\n\\nBerkas Anda dinyatakan *Lolos Seleksi Awal*.\\n\\n📊 IPK: *${$('Parse & Cek Kelayakan').first().json.ipk}*\\n💰 Pendapatan: *Rp ${$('Parse & Cek Kelayakan').first().json.pendapatan.toLocaleString('id-ID')}*\\n\\nData sudah tersimpan di Google Sheets ✅` }}",
+        "replyMarkup": "replyKeyboard",
+        "replyKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🔄 Cek Lagi",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Demo Lolos (Skenario 1)",
+                    "additionalFields": {
+                      "style": "success"
+                    }
+                  },
+                  {
+                    "text": "❌ Demo Tidak Lolos (Skenario 2)",
+                    "additionalFields": {
+                      "style": "danger"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🏠 Menu Utama",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "replyKeyboardOptions": {
+          "resize_keyboard": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-lolos-001",
+      "name": "Telegram Balas Lolos",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1760, 420],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_DENGAN_CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ `😔 Mohon maaf, *${$json.nama}* — Anda belum memenuhi kriteria beasiswa kali ini.\\n\\n📊 IPK: *${$json.ipk}* (min. 3.30)\\n💰 Pendapatan: *Rp ${$json.pendapatan.toLocaleString('id-ID')}* (maks. Rp 5.000.000)\\n\\nTetap semangat! 💪` }}",
+        "replyMarkup": "replyKeyboard",
+        "replyKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🔄 Coba Lagi",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📋 Syarat Beasiswa",
+                    "additionalFields": {
+                      "style": "success"
+                    }
+                  },
+                  {
+                    "text": "🏠 Menu Utama",
+                    "additionalFields": {
+                      "style": "primary"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "replyKeyboardOptions": {
+          "resize_keyboard": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-tidak-001",
+      "name": "Telegram Balas Tidak Lolos",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1520, 640],
+      "credentials": {
+        "telegramApi": {
+          "id": "GANTI_DENGAN_CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Router Menu & Pesan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Router Menu & Pesan": {
+      "main": [
+        [
+          {
+            "node": "Switch Rute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Rute": {
+      "main": [
+        [
+          {
+            "node": "Telegram Menu Utama",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Syarat",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Bantuan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent Ekstraksi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Ekstraksi": {
+      "main": [
+        [
+          {
+            "node": "Parse & Cek Kelayakan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse & Cek Kelayakan": {
+      "main": [
+        [
+          {
+            "node": "If Lolos?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Lolos?": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Simpan Lolos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Balas Tidak Lolos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Simpan Lolos": {
+      "main": [
+        [
+          {
+            "node": "Telegram Balas Lolos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "description": "Workflow UAS KMIE22002SI - Bot Beasiswa dengan tombol berwarna (primary/success/danger)"
+  }
+}
