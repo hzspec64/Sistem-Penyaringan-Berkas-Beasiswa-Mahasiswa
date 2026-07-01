@@ -159,7 +159,10 @@
       border-radius: 8px;
       display: grid;
       place-items: center;
-      font-size: 0.9rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: #2563eb;
       background: var(--accent-soft);
     }
 
@@ -264,10 +267,25 @@
       transition: all 0.25s ease;
     }
 
-    #hasil .hasil-icon {
-      font-size: 1.75rem;
-      margin-bottom: 0.35rem;
+    #hasil .status-mark {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin: 0 auto 0.6rem;
       display: block;
+      background: #94a3b8;
+    }
+
+    #hasil.lolos .status-mark {
+      background: var(--success);
+    }
+
+    #hasil.tidak-lolos .status-mark {
+      background: var(--danger);
+    }
+
+    #hasil.warning .status-mark {
+      background: var(--warn);
     }
 
     #hasil .hasil-text {
@@ -327,7 +345,7 @@
 </head>
 <body>
   <div class="page">
-    <div class="badge">🎓 UAS Kecerdasan Artifisial</div>
+    <div class="badge">KMIE22002SI · UAS Kecerdasan Artifisial</div>
 
     <div class="card">
       <header class="header">
@@ -337,14 +355,14 @@
 
       <div class="criteria">
         <div class="criteria-item">
-          <div class="criteria-icon">📊</div>
+          <div class="criteria-icon">IPK</div>
           <div>
             <strong>IPK minimal</strong>
             ≥ 3.30
           </div>
         </div>
         <div class="criteria-item">
-          <div class="criteria-icon">💰</div>
+          <div class="criteria-icon">Rp</div>
           <div>
             <strong>Pendapatan maks.</strong>
             ≤ Rp 5.000.000
@@ -378,7 +396,7 @@
       </form>
 
       <div id="hasil" role="status" aria-live="polite">
-        <span class="hasil-icon">✨</span>
+        <span class="status-mark" aria-hidden="true"></span>
         <div class="hasil-text">Hasil simulasi akan muncul di sini.</div>
       </div>
 
@@ -401,10 +419,10 @@
       return new Intl.NumberFormat('id-ID').format(n);
     }
 
-    function setHasil(type, icon, text, detail) {
+    function setHasil(type, text, detail) {
       hasil.className = type;
       hasil.innerHTML =
-        '<span class="hasil-icon">' + icon + '</span>' +
+        '<span class="status-mark" aria-hidden="true"></span>' +
         '<div class="hasil-text">' + text + '</div>' +
         (detail ? '<div class="hasil-detail">' + detail + '</div>' : '');
     }
@@ -416,7 +434,7 @@
       const pendapatan = parseFloat(pendapatanInput.value);
 
       if (Number.isNaN(ipk) || Number.isNaN(pendapatan)) {
-        setHasil('warning', '⚠️', 'Mohon isi IPK dan pendapatan dengan angka yang valid.');
+        setHasil('warning', 'Mohon isi IPK dan pendapatan dengan angka yang valid.');
         return;
       }
 
@@ -425,14 +443,12 @@
       if (ipk >= IPK_MIN && pendapatan <= PENDAPATAN_MAX) {
         setHasil(
           'lolos',
-          '✅',
           'Rekomendasi: Anda Layak Mendaftar via Telegram!',
           detail
         );
       } else {
         setHasil(
           'tidak-lolos',
-          '❌',
           'Rekomendasi: Anda Tidak Memenuhi Syarat Beasiswa.',
           detail
         );
