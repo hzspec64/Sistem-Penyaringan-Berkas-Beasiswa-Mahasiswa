@@ -1,5 +1,9 @@
 <div align="center">
 
+<img src="assets/hz64-banner.png" alt="HZ64 Scholarship Assistant Banner" width="100%" style="max-width: 720px; border-radius: 16px;" />
+
+<br><br>
+
 # HZ64 Scholarship Assistant
 
 **Sistem Penyaringan Berkas Beasiswa Mahasiswa**
@@ -15,6 +19,8 @@
 <br>
 
 *こんにちは! (Konnichiwa)* — Halo! Siap bantu cek kelayakan beasiswamu.
+
+<img src="assets/hz64-mascot.png" alt="HZ64 Mascot" width="140" />
 
 </div>
 
@@ -45,6 +51,11 @@ Proyek ini menggabungkan **Bot Telegram pintar** dan **simulasi web** untuk meny
 
 ## 挨拶 · Gaya Bot HZ64
 
+<table>
+<tr>
+<td width="120"><img src="assets/hz64-mascot.png" alt="Mascot" width="100" /></td>
+<td>
+
 Bot membalas dengan sentuhan bahasa Jepang yang ringan dan ramah:
 
 | Momen | Pesan |
@@ -52,6 +63,10 @@ Bot membalas dengan sentuhan bahasa Jepang yang ringan dan ramah:
 | `/start` | `Halo @user!` + **こんにちは! (Konnichiwa)** |
 | Lolos | `Selamat @user!` + **おめでとう (Omedetou)** |
 | Tidak lolos | `Tetap semangat!` + **頑張れ! (Ganbare)** |
+
+</td>
+</tr>
+</table>
 
 Contoh balasan lolos:
 
@@ -72,6 +87,9 @@ Data sudah tersimpan di Google Sheets ✅
 ## 構成 · Struktur Proyek
 
 ```
+├── assets/
+│   ├── hz64-banner.png         # Banner anime kawaii
+│   └── hz64-mascot.png         # Mascot waifu assistant
 ├── index.html                  # Part B — HZ64 Scholarship Assistant (web)
 ├── n8n-workflow-beasiswa.json  # Part A — workflow n8n
 ├── bot/                        # Bot Telegraf lokal (opsional)
@@ -143,6 +161,12 @@ Telegram Trigger
 
 Buka `index.html` di browser — tidak perlu server.
 
+<div align="center">
+  <img src="assets/hz64-banner.png" alt="Preview Web" width="90%" style="max-width: 560px; border-radius: 12px;" />
+  <br><br>
+  <sub>Animasi sakura · mascot floating · tema pastel anime kawaii</sub>
+</div>
+
 ### Branding
 
 - Header: **HZ64 Scholarship Assistant**
@@ -211,6 +235,10 @@ Arsip: `nim_nama_uas_AI.zip`
 ---
 
 <div align="center">
+
+<img src="assets/hz64-mascot.png" alt="Mascot" width="100" />
+
+<br>
 
 **Powered by HZ64 Scholarship Bot · AI Eligibility Checker**
 
