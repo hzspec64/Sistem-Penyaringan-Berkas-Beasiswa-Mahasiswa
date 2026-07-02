@@ -6,8 +6,8 @@
   <meta name="description" content="Simulasi kelayakan beasiswa STT-NF — cek IPK dan pendapatan orang tua, lalu daftar via bot Telegram @hz_64bot." />
   <meta name="theme-color" content="#db2777" />
   <link rel="icon" href="/assets/sttnf-logo.png" type="image/png" />
-  <link rel="preload" href="/assets/anime-bg-wide-web.jpg" as="image" />
-  <link rel="preload" href="/assets/hz64-banner-web.jpg" as="image" />
+  <link rel="preload" href="/assets/anime-bg-wide.webp" as="image" type="image/webp" />
+  <link rel="preload" href="/assets/hz64-banner.webp" as="image" type="image/webp" />
   <title>Simulasi Kelayakan Beasiswa — HZ64</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -162,52 +162,41 @@
     }
 
     .hero-panel {
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.85rem;
     }
 
     .hero-banner {
       width: 100%;
-      max-height: 168px;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      object-position: center 20%;
-      border-radius: 16px;
+      height: auto;
+      border-radius: 20px;
       display: block;
       box-shadow:
-        0 12px 32px rgba(0, 0, 0, 0.3),
+        0 20px 50px rgba(0, 0, 0, 0.35),
         0 0 0 1px rgba(255, 255, 255, 0.12);
-    }
-
-    @media (min-width: 480px) {
-      .hero-banner {
-        max-height: 200px;
-        border-radius: 18px;
-      }
     }
 
     .mascot-float {
       position: fixed;
-      right: max(0.75rem, calc(50% - 240px));
-      bottom: 1rem;
-      width: 64px;
+      right: max(1rem, calc(50% - 280px));
+      bottom: 1.5rem;
+      width: 88px;
       z-index: 2;
       animation: floatMascot 4.5s ease-in-out infinite;
-      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
-      opacity: 0.88;
-      pointer-events: none;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.4));
+      opacity: 0.92;
     }
 
     @media (max-width: 520px) {
       .mascot-float {
-        width: 56px;
-        bottom: 0.5rem;
+        right: 0.75rem;
+        bottom: 0.75rem;
+        width: 72px;
       }
     }
 
     @media (min-width: 900px) {
       .mascot-float {
-        right: calc(50% - 280px);
-        width: 72px;
+        right: calc(50% - 320px);
       }
     }
 
@@ -648,7 +637,7 @@
   <div class="scene-bg" aria-hidden="true">
     <img
       class="scene-bg-image"
-      src="/assets/anime-bg-wide-web.jpg"
+      src="/assets/anime-bg-wide.webp"
       alt=""
       width="1920"
       height="1280"
@@ -660,12 +649,12 @@
 
   <div class="sakura" id="sakura" aria-hidden="true"></div>
 
-  <img class="mascot-float" src="/assets/hz64-mascot-web.jpg" alt="" aria-hidden="true" loading="lazy" />
+  <img class="mascot-float" src="/assets/hz64-mascot.webp" alt="" aria-hidden="true" loading="lazy" />
 
   <div class="layout">
     <div class="page">
       <div class="hero-panel">
-        <img class="hero-banner" src="/assets/hz64-banner-web.jpg" alt="HZ64 Scholarship Assistant" width="960" height="640" />
+        <img class="hero-banner" src="/assets/hz64-banner.webp" alt="HZ64 Scholarship Assistant" width="1280" height="853" />
         <div class="badge-row">
           <img class="sttnf-logo" src="/assets/sttnf-logo.png" alt="STT-NF" width="36" height="36" />
           <div class="badge">HZ64 Scholarship Assistant</div>
