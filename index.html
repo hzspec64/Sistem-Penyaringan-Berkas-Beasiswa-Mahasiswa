@@ -50,13 +50,73 @@
       overflow-x: hidden;
     }
 
-    /* Background anime sakura — gambar landscape + overlay */
+    /* Background vektor — tajam di semua resolusi (bukan gambar ref distretch) */
     .scene-bg {
       position: fixed;
       inset: 0;
       z-index: 0;
-      background: url('assets/bg-sakura-anime.png') center center / cover no-repeat fixed;
-      transform: scale(1.02);
+      overflow: hidden;
+      background: linear-gradient(
+        180deg,
+        #0c1445 0%,
+        #1a2a6c 12%,
+        #4a3a7a 28%,
+        #c97b9a 48%,
+        #f0b4c8 58%,
+        #8b6b9e 75%,
+        #2d1f4e 92%,
+        #120a22 100%
+      );
+    }
+
+    .scene-sky-glow {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 45% at 50% 85%, rgba(255, 200, 220, 0.35) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 30% at 75% 25%, rgba(255, 230, 200, 0.2) 0%, transparent 50%);
+    }
+
+    .scene-moon {
+      position: absolute;
+      top: 6%;
+      right: 14%;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 38%, #fffef8 0%, #ffe8c8 55%, rgba(255, 232, 200, 0) 72%);
+      box-shadow: 0 0 50px rgba(255, 240, 210, 0.45);
+      animation: moonPulse 7s ease-in-out infinite;
+    }
+
+    @keyframes moonPulse {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; filter: brightness(1.08); }
+    }
+
+    .scene-stars {
+      position: absolute;
+      inset: 0;
+      opacity: 0.85;
+      background-image:
+        radial-gradient(1.5px 1.5px at 12% 18%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 28% 12%, rgba(255,255,255,0.9) 50%, transparent 51%),
+        radial-gradient(1.2px 1.2px at 45% 8%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 62% 15%, rgba(255,255,255,0.8) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 78% 10%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 88% 22%, rgba(255,255,255,0.7) 50%, transparent 51%),
+        radial-gradient(1px 1px at 8% 35%, rgba(255,255,255,0.6) 50%, transparent 51%),
+        radial-gradient(1.2px 1.2px at 92% 38%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 35% 25%, rgba(255,255,255,0.5) 50%, transparent 51%),
+        radial-gradient(1px 1px at 55% 20%, rgba(255,255,255,0.6) 50%, transparent 51%);
+    }
+
+    .scene-art {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
 
     .scene-overlay {
@@ -65,13 +125,8 @@
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse 70% 60% at 50% 45%, rgba(255, 255, 255, 0.08) 0%, transparent 55%),
-        linear-gradient(180deg, rgba(15, 8, 30, 0.35) 0%, rgba(20, 10, 35, 0.12) 35%, rgba(18, 8, 32, 0.4) 100%);
-    }
-
-    .scene-bg::before,
-    .scene-bg::after {
-      display: none;
+        radial-gradient(ellipse 55% 45% at 50% 42%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
+        linear-gradient(180deg, transparent 20%, rgba(18, 10, 34, 0.15) 55%, rgba(12, 8, 24, 0.35) 100%);
     }
 
     body::before,
@@ -480,7 +535,38 @@
   </style>
 </head>
 <body>
-  <div class="scene-bg" aria-hidden="true"></div>
+  <div class="scene-bg" aria-hidden="true">
+    <div class="scene-sky-glow"></div>
+    <div class="scene-stars"></div>
+    <div class="scene-moon"></div>
+    <svg class="scene-art" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Gunung -->
+      <path d="M520 520 L720 280 L920 520 Z" fill="#4a3560" opacity="0.7"/>
+      <path d="M600 520 L780 320 L960 520 Z" fill="#5c4578" opacity="0.55"/>
+      <path d="M0 520 L200 400 L380 520 Z" fill="#3d2d55" opacity="0.5"/>
+      <path d="M1060 520 L1240 380 L1440 520 Z" fill="#3d2d55" opacity="0.5"/>
+      <!-- Tanah & sungai -->
+      <path d="M0 520 Q360 500 720 515 T1440 520 L1440 900 L0 900 Z" fill="#1e3a2f" opacity="0.6"/>
+      <path d="M680 520 Q720 540 760 520 Q800 600 720 680 Q640 600 680 520" fill="#3b82c4" opacity="0.45"/>
+      <!-- Pohon sakura kiri -->
+      <path d="M0 520 L80 520 L95 380 Q60 300 20 220 Q0 280 30 350 Q50 400 70 450 L0 520" fill="#2a1838"/>
+      <circle cx="25" cy="200" r="55" fill="#ff9ec8" opacity="0.85"/>
+      <circle cx="55" cy="170" r="45" fill="#ffb7d5" opacity="0.9"/>
+      <circle cx="15" cy="250" r="40" fill="#fda4cf"/>
+      <circle cx="70" cy="230" r="38" fill="#ffc0dd"/>
+      <circle cx="40" cy="280" r="35" fill="#f9a8d4" opacity="0.8"/>
+      <!-- Pohon sakura kanan -->
+      <path d="M1440 520 L1360 520 L1345 380 Q1380 300 1420 220 Q1440 280 1410 350 Q1390 400 1370 450 L1440 520" fill="#2a1838"/>
+      <circle cx="1415" cy="200" r="55" fill="#ff9ec8" opacity="0.85"/>
+      <circle cx="1385" cy="170" r="45" fill="#ffb7d5" opacity="0.9"/>
+      <circle cx="1425" cy="250" r="40" fill="#fda4cf"/>
+      <circle cx="1370" cy="230" r="38" fill="#ffc0dd"/>
+      <circle cx="1400" cy="280" r="35" fill="#f9a8d4" opacity="0.8"/>
+      <!-- Semak bunga -->
+      <ellipse cx="360" cy="560" rx="120" ry="25" fill="#ff8fb8" opacity="0.35"/>
+      <ellipse cx="1080" cy="560" rx="120" ry="25" fill="#ff8fb8" opacity="0.35"/>
+    </svg>
+  </div>
   <div class="scene-overlay" aria-hidden="true"></div>
 
   <div class="sakura" id="sakura" aria-hidden="true"></div>
