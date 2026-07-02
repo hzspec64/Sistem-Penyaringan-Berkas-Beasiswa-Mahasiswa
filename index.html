@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulasi Kelayakan Beasiswa</title>
+  <meta name="description" content="Simulasi kelayakan beasiswa STT-NF — cek IPK dan pendapatan orang tua, lalu daftar via bot Telegram @hz_64bot." />
+  <meta name="theme-color" content="#db2777" />
+  <link rel="icon" href="assets/sttnf-logo.png" type="image/png" />
+  <title>Simulasi Kelayakan Beasiswa — HZ64</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -309,6 +312,64 @@
       margin-bottom: 1.1rem;
     }
 
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .progress-ring {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      position: relative;
+    }
+
+    .progress-ring svg {
+      width: 44px;
+      height: 44px;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring .ring-track {
+      fill: none;
+      stroke: #fce7f3;
+      stroke-width: 3.5;
+    }
+
+    .progress-ring .ring-progress {
+      fill: none;
+      stroke: #f472b6;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.45s ease, stroke 0.3s ease;
+    }
+
+    .progress-ring.good .ring-progress {
+      stroke: var(--success);
+    }
+
+    .progress-ring.warn .ring-progress {
+      stroke: var(--danger);
+    }
+
+    .progress-ring .ring-label {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: var(--muted);
+      transform: rotate(0deg);
+      line-height: 1;
+    }
+
+    .field-row .input-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
     .field label {
       display: flex;
       align-items: center;
@@ -403,7 +464,84 @@
       border: 1.5px dashed #cbd5e1;
       background: #f8fafc;
       text-align: center;
-      transition: all 0.25s ease;
+      transition: border-color 0.25s ease, background 0.25s ease;
+    }
+
+    #hasil.hasil-animate {
+      animation: hasilReveal 0.45s ease-out;
+    }
+
+    @keyframes hasilReveal {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    #hasil .hasil-jp {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.02em;
+    }
+
+    #hasil.lolos .hasil-jp { color: #15803d; }
+    #hasil.tidak-lolos .hasil-jp { color: #b91c1c; }
+
+    .btn-telegram {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-top: 0.85rem;
+      padding: 0.65rem 1.1rem;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #fff;
+      text-decoration: none;
+      background: linear-gradient(135deg, #229ed9 0%, #1a8bc4 100%);
+      box-shadow: 0 6px 18px rgba(34, 158, 217, 0.35);
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    .btn-telegram:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(34, 158, 217, 0.45);
+    }
+
+    .btn-telegram svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .sound-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      background: none;
+      font-family: inherit;
+      padding: 0.2rem 0;
+    }
+
+    .sound-toggle input {
+      accent-color: #db2777;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
     }
 
     #hasil .status-mark {
@@ -548,21 +686,39 @@
         <div class="field">
           <label for="ipk">
             Indeks Prestasi Kumulatif
-            <span>0.00 – 4.00</span>
+            <span>3.30 – 4.00</span>
           </label>
-          <div class="input-wrap">
-            <input type="number" id="ipk" step="0.01" min="0" max="4" placeholder="Contoh: 3.40" inputmode="decimal" />
+          <div class="field-row">
+            <div class="progress-ring" id="ipkRing" aria-hidden="true">
+              <svg viewBox="0 0 44 44">
+                <circle class="ring-track" cx="22" cy="22" r="18" />
+                <circle class="ring-progress" cx="22" cy="22" r="18" />
+              </svg>
+              <span class="ring-label">IPK</span>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="ipk" step="0.01" min="0" max="4" placeholder="Contoh: 3.40" inputmode="decimal" />
+            </div>
           </div>
         </div>
 
         <div class="field field-rp">
           <label for="pendapatan">
             Pendapatan Orang Tua
-            <span>per bulan</span>
+            <span>0 – 5 juta / bulan</span>
           </label>
-          <div class="input-wrap">
-            <span class="prefix">Rp</span>
-            <input type="number" id="pendapatan" min="0" step="1000" placeholder="Contoh: 2.500.000" inputmode="numeric" />
+          <div class="field-row">
+            <div class="progress-ring" id="pendapatanRing" aria-hidden="true">
+              <svg viewBox="0 0 44 44">
+                <circle class="ring-track" cx="22" cy="22" r="18" />
+                <circle class="ring-progress" cx="22" cy="22" r="18" />
+              </svg>
+              <span class="ring-label">Rp</span>
+            </div>
+            <div class="input-wrap">
+              <span class="prefix">Rp</span>
+              <input type="text" id="pendapatan" placeholder="Contoh: 2.500.000" inputmode="numeric" autocomplete="off" />
+            </div>
           </div>
         </div>
 
@@ -576,6 +732,11 @@
 
       <p class="footer-note">
         Powered by HZ64 Scholarship Bot &bull; AI Eligibility Checker
+        <br />
+        <label class="sound-toggle" id="soundToggle">
+          <input type="checkbox" id="soundOn" checked />
+          Suara efek lolos (opsional)
+        </label>
       </p>
       </div>
     </div>
@@ -583,30 +744,125 @@
 
   <script>
     const IPK_MIN = 3.3;
+    const IPK_MAX = 4;
     const PENDAPATAN_MAX = 5000000;
+    const RING_R = 18;
+    const RING_C = 2 * Math.PI * RING_R;
+    const TELEGRAM_URL = 'https://t.me/hz_64bot';
 
     const form = document.getElementById('formSimulasi');
     const ipkInput = document.getElementById('ipk');
     const pendapatanInput = document.getElementById('pendapatan');
     const hasil = document.getElementById('hasil');
+    const ipkRing = document.getElementById('ipkRing');
+    const pendapatanRing = document.getElementById('pendapatanRing');
+    const soundOn = document.getElementById('soundOn');
+
+    let audioCtx = null;
+
+    document.querySelectorAll('.ring-progress').forEach(function (circle) {
+      circle.style.strokeDasharray = String(RING_C);
+      circle.style.strokeDashoffset = String(RING_C);
+    });
 
     function formatRupiah(n) {
       return new Intl.NumberFormat('id-ID').format(n);
     }
 
-    function setHasil(type, text, detail) {
+    function parsePendapatan(value) {
+      const digits = String(value).replace(/\D/g, '');
+      return digits ? parseInt(digits, 10) : NaN;
+    }
+
+    function setRing(ringEl, pct, state) {
+      const circle = ringEl.querySelector('.ring-progress');
+      const clamped = Math.max(0, Math.min(100, pct));
+      circle.style.strokeDasharray = String(RING_C);
+      circle.style.strokeDashoffset = String(RING_C * (1 - clamped / 100));
+      ringEl.classList.remove('good', 'warn');
+      if (state) ringEl.classList.add(state);
+    }
+
+    function updateIpkRing() {
+      const ipk = parseFloat(ipkInput.value);
+      if (Number.isNaN(ipk) || ipk <= 0) {
+        setRing(ipkRing, 0, null);
+        return;
+      }
+      const pct = (ipk / IPK_MAX) * 100;
+      setRing(ipkRing, pct, ipk >= IPK_MIN ? 'good' : 'warn');
+    }
+
+    function updatePendapatanRing() {
+      const pendapatan = parsePendapatan(pendapatanInput.value);
+      if (Number.isNaN(pendapatan) || pendapatan < 0) {
+        setRing(pendapatanRing, 0, null);
+        return;
+      }
+      const pct = Math.min((pendapatan / PENDAPATAN_MAX) * 100, 100);
+      setRing(pendapatanRing, pct, pendapatan <= PENDAPATAN_MAX ? 'good' : 'warn');
+    }
+
+    function formatPendapatanInput() {
+      const raw = pendapatanInput.value.replace(/\D/g, '');
+      pendapatanInput.value = raw ? formatRupiah(parseInt(raw, 10)) : '';
+      updatePendapatanRing();
+    }
+
+    function playLolosChime() {
+      if (!soundOn.checked) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const t = audioCtx.currentTime;
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.12, t + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+        gain.connect(audioCtx.destination);
+
+        [523.25, 659.25, 783.99].forEach(function (freq, i) {
+          const osc = audioCtx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, t + i * 0.07);
+          osc.connect(gain);
+          osc.start(t + i * 0.07);
+          osc.stop(t + 0.55);
+        });
+      } catch (err) {
+        /* audio tidak tersedia */
+      }
+    }
+
+    function setHasil(type, text, detail, options) {
+      options = options || {};
       hasil.className = type;
-      hasil.innerHTML =
+      hasil.classList.remove('hasil-animate');
+      void hasil.offsetWidth;
+      hasil.classList.add('hasil-animate');
+
+      var html =
         '<span class="status-mark" aria-hidden="true"></span>' +
+        (options.jp ? '<span class="hasil-jp">' + options.jp + '</span>' : '') +
         '<div class="hasil-text">' + text + '</div>' +
         (detail ? '<div class="hasil-detail">' + detail + '</div>' : '');
+
+      if (options.telegram) {
+        html +=
+          '<a class="btn-telegram" href="' + TELEGRAM_URL + '" target="_blank" rel="noopener noreferrer">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>' +
+          'Daftar via Telegram</a>';
+      }
+
+      hasil.innerHTML = html;
+
+      if (type === 'lolos') playLolosChime();
     }
 
     function cekKelayakan(e) {
       if (e) e.preventDefault();
 
       const ipk = parseFloat(ipkInput.value);
-      const pendapatan = parseFloat(pendapatanInput.value);
+      const pendapatan = parsePendapatan(pendapatanInput.value);
 
       if (Number.isNaN(ipk) || Number.isNaN(pendapatan)) {
         setHasil('warning', 'Mohon isi IPK dan pendapatan dengan angka yang valid.');
@@ -618,19 +874,26 @@
       if (ipk >= IPK_MIN && pendapatan <= PENDAPATAN_MAX) {
         setHasil(
           'lolos',
-          'Rekomendasi: Anda Layak Mendaftar via Telegram @hz_64bot !',
-          detail
+          'Rekomendasi: Anda layak mendaftar via Telegram @hz_64bot!',
+          detail,
+          { jp: 'おめでとう · Omedetou', telegram: true }
         );
       } else {
         setHasil(
           'tidak-lolos',
-          'Rekomendasi: Anda Tidak Memenuhi Syarat Beasiswa.',
-          detail
+          'Rekomendasi: Anda tidak memenuhi syarat beasiswa.',
+          detail,
+          { jp: '頑張れ! · Ganbare' }
         );
       }
     }
 
     form.addEventListener('submit', cekKelayakan);
+    ipkInput.addEventListener('input', updateIpkRing);
+    pendapatanInput.addEventListener('input', formatPendapatanInput);
+
+    updateIpkRing();
+    updatePendapatanRing();
 
     function initSakuraPetals() {
       const container = document.getElementById('sakura');
