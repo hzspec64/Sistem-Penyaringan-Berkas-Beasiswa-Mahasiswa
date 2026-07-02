@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const msg = $input.first().json.message || {};\nconst text = (msg.text || '').trim();\nconst chatId = msg.chat?.id;\nconst nama = msg.from?.first_name || 'Mahasiswa';\n\nconst MENU = '🏠 Menu Utama';\nconst SYARAT = '📋 Syarat Beasiswa';\nconst DEMO_LOLOS = '✅ Demo Lolos (Skenario 1)';\nconst DEMO_TIDAK = '❌ Demo Tidak Lolos (Skenario 2)';\nconst BANTUAN = 'ℹ️ Bantuan';\nconst CEK_LAGI = '🔄 Cek Lagi';\nconst COBA_LAGI = '🔄 Coba Lagi';\nconst DAFTAR = '🎓 Daftar / Cek Beasiswa';\n\nlet route = 'proses';\nlet pesan = text;\n\nif (!text || text === '/start' || text === MENU || text === CEK_LAGI || text === COBA_LAGI || text === DAFTAR) {\n  route = 'menu';\n} else if (text === SYARAT) {\n  route = 'syarat';\n} else if (text === BANTUAN) {\n  route = 'bantuan';\n} else if (text === DEMO_LOLOS) {\n  route = 'proses';\n  pesan = 'IPK saya 3.52 dan pendapatan orang tua 4.5 juta.';\n} else if (text === DEMO_TIDAK) {\n  route = 'proses';\n  pesan = 'IPK saya 3.10 dan gaji orang tua 3 juta.';\n}\n\nreturn [{ json: { route, pesan, chatId, nama, textAsli: text } }];"
+        "jsCode": "const msg = $input.first().json.message || {};\nconst text = (msg.text || '').trim();\nconst chatId = msg.chat?.id;\nconst nama = [msg.from?.first_name, msg.from?.last_name].filter(Boolean).join(' ') || msg.from?.username || 'Mahasiswa';\n\nconst MENU = '🏠 Menu Utama';\nconst SYARAT = '📋 Syarat Beasiswa';\nconst DEMO_LOLOS = '✅ Demo Lolos (Skenario 1)';\nconst DEMO_TIDAK = '❌ Demo Tidak Lolos (Skenario 2)';\nconst BANTUAN = 'ℹ️ Bantuan';\nconst CEK_LAGI = '🔄 Cek Lagi';\nconst COBA_LAGI = '🔄 Coba Lagi';\nconst DAFTAR = '🎓 Daftar / Cek Beasiswa';\n\nlet route = 'proses';\nlet pesan = text;\n\nif (!text || text === '/start' || text === MENU || text === CEK_LAGI || text === COBA_LAGI || text === DAFTAR) {\n  route = 'menu';\n} else if (text === SYARAT) {\n  route = 'syarat';\n} else if (text === BANTUAN) {\n  route = 'bantuan';\n} else if (text === DEMO_LOLOS) {\n  route = 'proses';\n  pesan = 'IPK saya 3.52 dan pendapatan orang tua 4.5 juta.';\n} else if (text === DEMO_TIDAK) {\n  route = 'proses';\n  pesan = 'IPK saya 3.10 dan gaji orang tua 3 juta.';\n}\n\nreturn [{ json: { route, pesan, chatId, nama, textAsli: text } }];"
       },
       "id": "code-router-001",
       "name": "Router Menu & Pesan",
@@ -113,7 +113,7 @@
     {
       "parameters": {
         "chatId": "={{ $json.chatId }}",
-        "text": "={{ `Halo ${$json.nama}! 👋\\n\\nSaya <b>Bot Penyaring Beasiswa STTNF</b> — siap bantu cek kelayakan beasiswa.\\n\\nKetik data bebas, atau <b>ketuk kotak abu-abu</b> untuk salin:\\n<code>IPK saya 3.52 dan pendapatan orang tua 4.5 juta</code>\\n\\nAtau tekan tombol <b>Demo Lolos</b> di bawah ⬇️` }}",
+        "text": "={{ `Halo ${$json.nama}! 👋 こんにちは! (Konnichiwa)\\n\\nSaya <b>Bot Penyaring Beasiswa STTNF</b> — siap bantu cek kelayakan beasiswa.\\n\\nKetik data bebas, atau <b>ketuk kotak abu-abu</b> untuk salin:\\n<code>IPK saya 3.52 dan pendapatan orang tua 4.5 juta</code>\\n\\nAtau tekan tombol <b>Demo Lolos</b> di bawah ⬇️` }}",
         "replyMarkup": "replyKeyboard",
         "replyKeyboard": {
           "rows": [
@@ -386,7 +386,7 @@
     {
       "parameters": {
         "chatId": "={{ $('Parse & Cek Kelayakan').item.json.chatId }}",
-        "text": "={{ `🎉 *Selamat, ${$('Parse & Cek Kelayakan').first().json.nama}!*\\n\\nBerkas Anda dinyatakan *Lolos Seleksi Awal*.\\n\\n📊 IPK: *${$('Parse & Cek Kelayakan').first().json.ipk}*\\n💰 Pendapatan: *Rp ${$('Parse & Cek Kelayakan').first().json.pendapatan.toLocaleString('id-ID')}*\\n\\nData sudah tersimpan di Google Sheets ✅` }}",
+        "text": "={{ `🎉 <b>Selamat, ${$('Parse & Cek Kelayakan').first().json.nama}!</b> おめでとう (Omedetou)\\n\\nBerkas Anda dinyatakan <b>Lolos Seleksi Awal</b>.\\n\\n📊 IPK: <b>${$('Parse & Cek Kelayakan').first().json.ipk}</b>\\n💰 Pendapatan: <b>Rp ${$('Parse & Cek Kelayakan').first().json.pendapatan.toLocaleString('id-ID')}</b>\\n\\nData sudah tersimpan di Google Sheets ✅` }}",
         "replyMarkup": "replyKeyboard",
         "replyKeyboard": {
           "rows": [
@@ -439,7 +439,7 @@
         },
         "additionalFields": {
           "appendAttribution": false,
-          "parse_mode": "Markdown"
+          "parse_mode": "HTML"
         }
       },
       "id": "telegram-lolos-001",
@@ -457,7 +457,7 @@
     {
       "parameters": {
         "chatId": "={{ $json.chatId }}",
-        "text": "={{ `😔 Mohon maaf, *${$json.nama}* — Anda belum memenuhi kriteria beasiswa kali ini.\\n\\n📊 IPK: *${$json.ipk}* (min. 3.30)\\n💰 Pendapatan: *Rp ${$json.pendapatan.toLocaleString('id-ID')}* (maks. Rp 5.000.000)\\n\\nTetap semangat! 💪` }}",
+        "text": "={{ `😔 Mohon maaf, <b>${$json.nama}</b> — Anda belum memenuhi kriteria beasiswa kali ini.\\n\\n📊 IPK: <b>${$json.ipk}</b> (min. 3.30)\\n💰 Pendapatan: <b>Rp ${$json.pendapatan.toLocaleString('id-ID')}</b> (maks. Rp 5.000.000)\\n\\nTetap semangat! 💪 頑張れ! (Ganbare)` }}",
         "replyMarkup": "replyKeyboard",
         "replyKeyboard": {
           "rows": [
@@ -498,7 +498,7 @@
         },
         "additionalFields": {
           "appendAttribution": false,
-          "parse_mode": "Markdown"
+          "parse_mode": "HTML"
         }
       },
       "id": "telegram-tidak-001",

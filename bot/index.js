@@ -72,21 +72,24 @@ function logLolos(user, ipk, pendapatan) {
 async function kirimHasil(ctx, ipk, pendapatan) {
   const user = ctx.from;
   const lolos = checkEligibility(ipk, pendapatan);
-
-  const ringkasan =
-    `📊 *Hasil Penilaian*\n\n` +
-    `• IPK: *${ipk}*\n` +
-    `• Pendapatan: *Rp ${pendapatan.toLocaleString('id-ID')}*/bulan\n\n`;
+  const nama = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Mahasiswa';
 
   if (lolos) {
     logLolos(user, ipk, pendapatan);
     await ctx.reply(
-      ringkasan + '✅ *Selamat!* Berkas Anda dinyatakan Lolos Seleksi Awal dan data sudah tersimpan.',
+      `🎉 *Selamat, ${nama}!* おめでとう (Omedetou)\n\n` +
+        `Berkas Anda dinyatakan *Lolos Seleksi Awal*.\n\n` +
+        `📊 IPK: *${ipk}*\n` +
+        `💰 Pendapatan: *Rp ${pendapatan.toLocaleString('id-ID')}*\n\n` +
+        `Data sudah tersimpan di Google Sheets ✅`,
       { parse_mode: 'Markdown', reply_markup: resultKeyboard() }
     );
   } else {
     await ctx.reply(
-      ringkasan + '❌ *Mohon maaf,* Anda belum memenuhi kriteria beasiswa kali ini. Tetap semangat!',
+      `😔 Mohon maaf, *${nama}* — Anda belum memenuhi kriteria beasiswa kali ini.\n\n` +
+        `📊 IPK: *${ipk}* (min. 3.30)\n` +
+        `💰 Pendapatan: *Rp ${pendapatan.toLocaleString('id-ID')}* (maks. Rp 5.000.000)\n\n` +
+        `Tetap semangat! 💪 頑張れ! (Ganbare)`,
       { parse_mode: 'Markdown', reply_markup: resultKeyboard() }
     );
   }
@@ -94,8 +97,13 @@ async function kirimHasil(ctx, ipk, pendapatan) {
   resetSession(user.id);
 }
 
-async function kirimMenuUtama(ctx, teks = '🎓 *Bot Penyaring Beasiswa Mahasiswa*\n\nSilakan pilih tombol di bawah:') {
+async function kirimMenuUtama(ctx) {
   resetSession(ctx.from.id);
+  const nama = [ctx.from.first_name, ctx.from.last_name].filter(Boolean).join(' ') || ctx.from.username || 'Mahasiswa';
+  const teks =
+    `Halo ${nama}! 👋 こんにちは! (Konnichiwa)\n\n` +
+    `Saya *Bot Penyaring Beasiswa STTNF* — siap bantu cek kelayakan beasiswa.\n\n` +
+    `Silakan pilih tombol di bawah:`;
   await ctx.reply(teks, {
     parse_mode: 'Markdown',
     reply_markup: mainMenuKeyboard(),
@@ -115,7 +123,7 @@ async function jalankanDemo(ctx, teks) {
 }
 
 bot.start((ctx) => kirimMenuUtama(ctx));
-bot.help((ctx) => kirimMenuUtama(ctx, BANTUAN));
+bot.help((ctx) => ctx.reply(BANTUAN, { parse_mode: 'Markdown', reply_markup: mainMenuKeyboard() }));
 
 bot.command('menu', (ctx) => kirimMenuUtama(ctx));
 
