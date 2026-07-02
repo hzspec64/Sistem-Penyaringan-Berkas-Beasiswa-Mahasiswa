@@ -48,9 +48,9 @@
       color: var(--text);
       background: #1a0f2e;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 1.25rem;
+      padding: 1rem 1.25rem 2rem;
       position: relative;
       overflow-x: hidden;
     }
@@ -162,40 +162,52 @@
     }
 
     .hero-panel {
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.75rem;
     }
 
     .hero-banner {
       width: 100%;
-      border-radius: 20px;
+      max-height: 168px;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      object-position: center 20%;
+      border-radius: 16px;
       display: block;
       box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.35),
+        0 12px 32px rgba(0, 0, 0, 0.3),
         0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+
+    @media (min-width: 480px) {
+      .hero-banner {
+        max-height: 200px;
+        border-radius: 18px;
+      }
     }
 
     .mascot-float {
       position: fixed;
-      right: max(1rem, calc(50% - 280px));
-      bottom: 1.5rem;
-      width: 88px;
+      right: max(0.75rem, calc(50% - 240px));
+      bottom: 1rem;
+      width: 64px;
       z-index: 2;
       animation: floatMascot 4.5s ease-in-out infinite;
-      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.4));
-      opacity: 0.92;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+      opacity: 0.88;
+      pointer-events: none;
     }
 
     @media (max-width: 520px) {
       .mascot-float {
-        right: 0.75rem;
-        bottom: 0.75rem;
-        width: 72px;
+        width: 56px;
+        bottom: 0.5rem;
       }
     }
 
     @media (min-width: 900px) {
       .mascot-float {
-        right: calc(50% - 320px);
+        right: calc(50% - 280px);
+        width: 72px;
       }
     }
 
@@ -653,7 +665,7 @@
   <div class="layout">
     <div class="page">
       <div class="hero-panel">
-        <img class="hero-banner" src="/assets/hz64-banner-web.jpg" alt="HZ64 Scholarship Assistant" width="960" height="540" />
+        <img class="hero-banner" src="/assets/hz64-banner-web.jpg" alt="HZ64 Scholarship Assistant" width="960" height="640" />
         <div class="badge-row">
           <img class="sttnf-logo" src="/assets/sttnf-logo.png" alt="STT-NF" width="36" height="36" />
           <div class="badge">HZ64 Scholarship Assistant</div>
