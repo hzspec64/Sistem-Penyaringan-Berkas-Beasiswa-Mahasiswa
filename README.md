@@ -78,7 +78,7 @@ Proyek UAS ini menggabungkan **Bot Telegram pintar** dan **simulasi web** untuk 
 **例 · 合格メッセージ**
 
 ```
-🎉 Selamat, Muhammad!
+🎉 Selamat, Sugino!
 おめでとう (Omedetou)
 
 Berkas Anda dinyatakan Lolos Seleksi Awal.
