@@ -1,14 +1,21 @@
 <div align="center">
 
-<img src="assets/hz64-banner.png" alt="HZ64 Scholarship Assistant Banner" width="100%" style="max-width: 720px; border-radius: 16px;" />
+<img src="assets/readme-header.png" alt="HZ64 Scholarship Assistant 奨学金アシスタント" width="100%" style="max-width: 780px;" />
+
+<br>
+
+<img src="assets/hz64-banner.png" alt="HZ64 Banner — Almamater STT-NF" width="100%" style="max-width: 720px; border-radius: 16px;" />
 
 <br><br>
 
-# HZ64 Scholarship Assistant
+<img src="assets/sttnf-logo.png" alt="Logo STT-NF" width="72" />
 
+<br>
+
+**〔 学生奨学金審査システム 〕**  
 **Sistem Penyaringan Berkas Beasiswa Mahasiswa**
 
-`KMIE22002SI` · Kecerdasan Artifisial · UAS STTNF
+`KMIE22002SI` ／ 人工知能 ／ UAS **STT-NF**
 
 <br>
 
@@ -18,57 +25,57 @@
 
 <br>
 
-*こんにちは! (Konnichiwa)* — Halo! Siap bantu cek kelayakan beasiswamu.
+**こんにちは!** *(Konnichiwa)* — Halo! Siap bantu cek kelayakan beasiswamu.
 
-<img src="assets/hz64-mascot.png" alt="HZ64 Mascot" width="140" />
+<img src="assets/hz64-mascot.png" alt="HZ64 Mascot" width="130" />
 
 </div>
 
----
-
-## はじめに · Pengenalan
-
-Proyek ini menggabungkan **Bot Telegram pintar** dan **simulasi web** untuk menyaring mahasiswa yang layak mendaftar beasiswa.
-
-| Komponen | Peran | Bobot UAS |
-|----------|-------|-----------|
-| **Part A** — Bot Telegram + n8n | Penyaringan otomatis + AI + Google Sheets | 45% |
-| **Part B** — `index.html` | Kalkulator simulasi di browser | 45% |
-| **Video demo** | Penjelasan singkat sistem | 10% |
+<br>
 
 ---
 
-## 条件 · Syarat Lolos
+## 〔 はじめに 〕 Pengenalan
 
-> Kedua syarat **harus** terpenuhi untuk dinyatakan *Lolos Seleksi Awal*.
+Proyek UAS ini menggabungkan **Bot Telegram pintar** dan **simulasi web** untuk menyaring mahasiswa yang layak mendaftar beasiswa.
 
-| Kriteria | Nilai |
-|----------|-------|
-| IPK minimal | **≥ 3.30** |
-| Pendapatan orang tua / bulan | **≤ Rp 5.000.000** |
+| 区分 | Komponen | Peran | Bobot |
+|:--:|----------|-------|:-----:|
+| A | Bot Telegram + n8n | Penyaringan otomatis + AI + Sheets | 45% |
+| B | `index.html` | Kalkulator simulasi browser | 45% |
+| — | Video demo | Penjelasan sistem | 10% |
 
 ---
 
-## 挨拶 · Gaya Bot HZ64
+## 〔 条件 〕 Syarat Lolos
+
+> **合格条件** — Kedua syarat harus terpenuhi untuk *Lolos Seleksi Awal*.
+
+| 項目 | Kriteria | Nilai |
+|------|----------|-------|
+| IPK | 最小値 | **≥ 3.30** |
+| 収入 | 両親の月収 | **≤ Rp 5.000.000** |
+
+---
+
+## 〔 挨拶 〕 Gaya Bot HZ64
 
 <table>
 <tr>
-<td width="120"><img src="assets/hz64-mascot.png" alt="Mascot" width="100" /></td>
+<td width="110"><img src="assets/hz64-mascot.png" alt="Mascot" width="95" /></td>
 <td>
 
-Bot membalas dengan sentuhan bahasa Jepang yang ringan dan ramah:
-
-| Momen | Pesan |
-|-------|-------|
-| `/start` | `Halo @user!` + **こんにちは! (Konnichiwa)** |
-| Lolos | `Selamat @user!` + **おめでとう (Omedetou)** |
-| Tidak lolos | `Tetap semangat!` + **頑張れ! (Ganbare)** |
+| 場面 | Balasan Bot |
+|------|-------------|
+| `/start` | `Halo @user!` ＋ **こんにちは! (Konnichiwa)** |
+| 合格 | `Selamat @user!` ＋ **おめでとう (Omedetou)** |
+| 不合格 | `Tetap semangat!` ＋ **頑張れ! (Ganbare)** |
 
 </td>
 </tr>
 </table>
 
-Contoh balasan lolos:
+**例 · 合格メッセージ**
 
 ```
 🎉 Selamat, Muhammad!
@@ -84,57 +91,48 @@ Data sudah tersimpan di Google Sheets ✅
 
 ---
 
-## 構成 · Struktur Proyek
+## 〔 構成 〕 Struktur Proyek
 
 ```
 ├── assets/
-│   ├── hz64-banner.png         # Banner anime kawaii
-│   └── hz64-mascot.png         # Mascot waifu assistant
-├── index.html                  # Part B — HZ64 Scholarship Assistant (web)
-├── n8n-workflow-beasiswa.json  # Part A — workflow n8n
-├── bot/                        # Bot Telegraf lokal (opsional)
-│   ├── index.js
-│   ├── keyboards.js
-│   └── parser.js
+│   ├── readme-header.png       # Header JP typography
+│   ├── hz64-banner.png         # Banner almamater STT-NF
+│   ├── hz64-mascot.png         # Mascot assistant
+│   └── sttnf-logo.png          # Logo resmi STT-NF
+├── index.html
+├── n8n-workflow-beasiswa.json
+├── bot/
 ├── package.json
-├── .env.example
 └── README.md
 ```
 
 ---
 
-## Part A — Bot Telegram + n8n
+## 〔 Part A 〕 Bot Telegram ＋ n8n
 
-### Alur workflow
+### 処理フロー · Alur Workflow
 
 ```
-Telegram Trigger
-    → Router Menu & Pesan
-        → Menu / Syarat / Bantuan
-        → AI Agent Ekstraksi
-            → Parse & Cek Kelayakan
-                → If Lolos?
-                    ├─ Ya   → Google Sheets → Telegram Balas Lolos
-                    └─ Tidak → Telegram Balas Tidak Lolos
+Telegram Trigger → Router Menu → AI Agent → Parse & Cek
+                                    → If Lolos?
+                                       ├─ Yes → Google Sheets → Balas Lolos
+                                       └─ No  → Balas Tidak Lolos
 ```
 
-### Fitur
+### 機能 · Fitur
 
-- Tombol berwarna **primary / success / danger** (full width)
-- **Demo Lolos** & **Demo Tidak Lolos** — skenario siap pakai untuk UAS
-- Ekstraksi IPK & pendapatan dari teks bebas via **AI Agent**
-- Pendaftar lolos otomatis tersimpan di **Google Sheets**
-- Nama lengkap user (first + last name) di balasan bot
+- Tombol berwarna **primary / success / danger**
+- **Demo Lolos** ＆ **Demo Tidak Lolos**
+- Ekstraksi teks bebas via **AI Agent**
+- Data lolos → **Google Sheets**
+- Nama lengkap user di balasan
 
 ### Setup n8n
 
-1. Buat bot di [@BotFather](https://t.me/BotFather) → simpan token.
-2. Import `n8n-workflow-beasiswa.json` ke [n8n Cloud](https://n8n.io).
-3. Hubungkan credential:
-   - **Telegram Bot API**
-   - **OpenAI Chat Model** → port *Chat Model* pada AI Agent
-   - **Google Sheets OAuth2**
-4. Mapping kolom **Google Sheets** (mode Expression / fx):
+1. Token bot dari [@BotFather](https://t.me/BotFather)
+2. Import `n8n-workflow-beasiswa.json` → [n8n Cloud](https://n8n.io)
+3. Credential: **Telegram** · **OpenAI** · **Google Sheets**
+4. Mapping Sheets (mode **fx**):
 
    | Kolom | Expression |
    |-------|------------|
@@ -144,108 +142,82 @@ Telegram Trigger
    | Status | `Lolos Seleksi Awal` |
    | Waktu | `$now.toFormat('dd/MM/yyyy HH:mm')` |
 
-5. **Active ON** workflow.
+5. **Active ON**
 
-> Satu bot = satu trigger aktif. Jangan jalankan `npm start` bersamaan dengan n8n Active.
+### テスト · Skenario Uji
 
-### Skenario uji
-
-| Input | Hasil |
-|-------|-------|
-| `IPK saya 3.52 dan pendapatan orang tua 4.5 juta` | Lolos · masuk Sheets |
-| `IPK saya 3.10 dan gaji orang tua 3 juta` | Tidak lolos · tidak masuk Sheets |
+| Input | 結果 |
+|-------|------|
+| `IPK saya 3.52 dan pendapatan orang tua 4.5 juta` | 合格 · masuk Sheets |
+| `IPK saya 3.10 dan gaji orang tua 3 juta` | 不合格 · tidak masuk Sheets |
 
 ---
 
-## Part B — Simulasi Web
+## 〔 Part B 〕 Simulasi Web
 
-Buka `index.html` di browser — tidak perlu server.
+Buka `index.html` di browser.
 
 <div align="center">
-  <img src="assets/hz64-banner.png" alt="Preview Web" width="90%" style="max-width: 560px; border-radius: 12px;" />
+  <img src="assets/hz64-banner.png" alt="Preview Web" width="88%" style="max-width: 540px; border-radius: 12px;" />
   <br><br>
-  <sub>Animasi sakura · mascot floating · tema pastel anime kawaii</sub>
+  <sub>桜アニメーション · マスコット · パステルテーマ</sub>
 </div>
 
 ### Branding
 
 - Header: **HZ64 Scholarship Assistant**
 - Footer: *Powered by HZ64 Scholarship Bot · AI Eligibility Checker*
-- Rekomendasi lolos: daftar via **@hz_64bot**
+- Lolos → daftar **@hz_64bot**
 
-### Logika
+### ロジック · Logika
 
 ```javascript
 if (ipk >= 3.3 && pendapatan <= 5000000) {
-  // Hijau — Layak mendaftar via Telegram @hz_64bot
+  // 合格 — Layak daftar via @hz_64bot
 } else {
-  // Merah — Tidak memenuhi syarat
+  // 不合格
 }
 ```
 
-### Tes cepat
-
-| IPK | Pendapatan | Hasil |
-|-----|------------|-------|
-| 3.52 | 4.500.000 | Hijau |
-| 3.10 | 3.000.000 | Merah |
-
 ---
 
-## Bot Lokal (Opsional)
-
-```bash
-cp .env.example .env   # isi BOT_TOKEN
-npm install
-npm start
-```
-
-Matikan workflow n8n (**Active OFF**) sebelum menjalankan bot lokal.
-
----
-
-## 提出 · Pengumpulan UAS
+## 〔 提出 〕 Pengumpulan UAS
 
 Arsip: `nim_nama_uas_AI.zip`
 
 - [ ] `index.html`
 - [ ] `n8n-workflow-beasiswa.json`
-- [ ] Link bot → [t.me/hz_64bot](https://t.me/hz_64bot)
-- [ ] Link video demo (≤ 3 menit)
-
-### Checklist video
-
-- [ ] Bot — Demo Lolos + data masuk Sheets
-- [ ] Bot — Demo Tidak Lolos
-- [ ] Web — hasil hijau & merah
+- [ ] [t.me/hz_64bot](https://t.me/hz_64bot)
+- [ ] Video demo ≤ 3 menit
 
 ---
 
-## 技術 · Teknologi
+## 〔 技術 〕 Teknologi
 
-| Stack | Fungsi |
-|-------|--------|
-| [n8n](https://n8n.io) | Otomasi workflow |
-| [Telegram Bot API](https://core.telegram.org/bots/api) | Interface chat |
-| OpenAI | Ekstraksi data (AI Agent) |
-| Google Sheets | Database pendaftar lolos |
+| 技術 | 用途 |
+|------|------|
+| n8n | Workflow otomasi |
+| Telegram Bot API | Chat interface |
+| OpenAI | AI ekstraksi data |
+| Google Sheets | Database lolos |
 | HTML · CSS · JS | Simulasi web |
-| Node.js · Telegraf | Bot lokal (opsional) |
 
 ---
 
 <div align="center">
 
-<img src="assets/hz64-mascot.png" alt="Mascot" width="100" />
+<img src="assets/sttnf-logo.png" alt="STT-NF" width="56" />
+&nbsp;&nbsp;
+<img src="assets/hz64-mascot.png" alt="Mascot" width="88" />
 
-<br>
+<br><br>
 
 **Powered by HZ64 Scholarship Bot · AI Eligibility Checker**
 
-*がんばって! (Ganbatte)* — Good luck with your scholarship!
+**がんばって!** *(Ganbatte)* — Semangat untuk beasiswamu!
 
 <br>
 
-MIT License · Proyek akademik UAS STTNF
+MIT License · UAS STT-NF · KMIE22002SI
 
 </div>

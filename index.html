@@ -170,6 +170,20 @@
       .mascot-wrap { display: block; }
     }
 
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+    }
+
+    .sttnf-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
     .badge {
       display: inline-flex;
       align-items: center;
@@ -183,7 +197,7 @@
       border: 1px solid rgba(249, 168, 212, 0.35);
       padding: 0.35rem 0.75rem;
       border-radius: 999px;
-      margin-bottom: 1rem;
+      margin-bottom: 0;
     }
 
     .card {
@@ -445,7 +459,10 @@
     <div class="page">
       <img class="hero-banner" src="assets/hz64-banner.png" alt="HZ64 Scholarship Assistant" />
 
-      <div class="badge">HZ64 Scholarship Assistant</div>
+      <div class="badge-row">
+        <img class="sttnf-logo" src="assets/sttnf-logo.png" alt="STT-NF" />
+        <div class="badge">HZ64 Scholarship Assistant</div>
+      </div>
 
     <div class="card">
       <header class="header">
