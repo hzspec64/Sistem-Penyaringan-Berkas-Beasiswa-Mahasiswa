@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Simulasi kelayakan beasiswa STT-NF — cek IPK dan pendapatan orang tua, lalu daftar via bot Telegram @hz_64bot." />
   <meta name="theme-color" content="#db2777" />
-  <link rel="icon" href="assets/sttnf-logo.png" type="image/png" />
+  <link rel="icon" href="/assets/sttnf-logo.png" type="image/png" />
+  <link rel="preload" href="/assets/anime-bg-wide-web.jpg" as="image" />
+  <link rel="preload" href="/assets/hz64-banner-web.jpg" as="image" />
   <title>Simulasi Kelayakan Beasiswa — HZ64</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -634,10 +636,10 @@
   <div class="scene-bg" aria-hidden="true">
     <img
       class="scene-bg-image"
-      src="assets/anime-bg-wide.png"
+      src="/assets/anime-bg-wide-web.jpg"
       alt=""
-      width="1536"
-      height="1024"
+      width="1920"
+      height="1280"
       decoding="async"
       fetchpriority="high"
     />
@@ -646,14 +648,14 @@
 
   <div class="sakura" id="sakura" aria-hidden="true"></div>
 
-  <img class="mascot-float" src="assets/hz64-mascot.png" alt="" aria-hidden="true" />
+  <img class="mascot-float" src="/assets/hz64-mascot-web.jpg" alt="" aria-hidden="true" loading="lazy" />
 
   <div class="layout">
     <div class="page">
       <div class="hero-panel">
-        <img class="hero-banner" src="assets/hz64-banner.png" alt="HZ64 Scholarship Assistant" />
+        <img class="hero-banner" src="/assets/hz64-banner-web.jpg" alt="HZ64 Scholarship Assistant" width="960" height="540" />
         <div class="badge-row">
-          <img class="sttnf-logo" src="assets/sttnf-logo.png" alt="STT-NF" />
+          <img class="sttnf-logo" src="/assets/sttnf-logo.png" alt="STT-NF" width="36" height="36" />
           <div class="badge">HZ64 Scholarship Assistant</div>
         </div>
       </div>
@@ -697,7 +699,7 @@
               <span class="ring-label">IPK</span>
             </div>
             <div class="input-wrap">
-              <input type="number" id="ipk" step="0.01" min="0" max="4" placeholder="Contoh: 3.40" inputmode="decimal" />
+              <input type="text" id="ipk" placeholder="Ketik 350 → 3.50" inputmode="numeric" autocomplete="off" />
             </div>
           </div>
         </div>
@@ -769,6 +771,24 @@
       return new Intl.NumberFormat('id-ID').format(n);
     }
 
+    function parseIpk(value) {
+      const digits = String(value).replace(/\D/g, '');
+      if (!digits) return NaN;
+      return Math.min(parseInt(digits, 10) / 100, IPK_MAX);
+    }
+
+    function formatIpkInput() {
+      const raw = ipkInput.value.replace(/\D/g, '');
+      if (!raw) {
+        ipkInput.value = '';
+        updateIpkRing();
+        return;
+      }
+      const num = Math.min(parseInt(raw, 10) / 100, IPK_MAX);
+      ipkInput.value = num.toFixed(2);
+      updateIpkRing();
+    }
+
     function parsePendapatan(value) {
       const digits = String(value).replace(/\D/g, '');
       return digits ? parseInt(digits, 10) : NaN;
@@ -784,7 +804,7 @@
     }
 
     function updateIpkRing() {
-      const ipk = parseFloat(ipkInput.value);
+      const ipk = parseIpk(ipkInput.value);
       if (Number.isNaN(ipk) || ipk <= 0) {
         setRing(ipkRing, 0, null);
         return;
@@ -861,7 +881,7 @@
     function cekKelayakan(e) {
       if (e) e.preventDefault();
 
-      const ipk = parseFloat(ipkInput.value);
+      const ipk = parseIpk(ipkInput.value);
       const pendapatan = parsePendapatan(pendapatanInput.value);
 
       if (Number.isNaN(ipk) || Number.isNaN(pendapatan)) {
@@ -889,7 +909,7 @@
     }
 
     form.addEventListener('submit', cekKelayakan);
-    ipkInput.addEventListener('input', updateIpkRing);
+    ipkInput.addEventListener('input', formatIpkInput);
     pendapatanInput.addEventListener('input', formatPendapatanInput);
 
     updateIpkRing();
